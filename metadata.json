@@ -2,5 +2,5 @@
   "name": "Pixelador Digital",
   "description": "Herramienta interactiva para simular el proceso de digitalización de imágenes (muestreo y cuantización) ajustando resolución y profundidad de color.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

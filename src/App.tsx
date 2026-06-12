@@ -30,7 +30,8 @@ import EducationalInfo from './components/EducationalInfo';
 
 export default function App() {
   // Preset Selection state (Defaults to first example photo)
-  const [activePresetId, setActivePresetId] = useState<string | null>('photo1');
+  // Preset Selection state (Defaults to the fruits example)
+  const [activePresetId, setActivePresetId] = useState<string | null>('frutas');
   const [customImageSrc, setCustomImageSrc] = useState<string | null>(null);
   
   // Settings state
@@ -543,11 +544,9 @@ export default function App() {
                 onChange={(e) => setSettings(prev => ({ ...prev, resolutionWidth: parseInt(e.target.value) }))}
                 className="w-full h-1 rounded-lg bg-zinc-800 accent-zinc-200 cursor-pointer mt-2"
               />
-              <div className="grid grid-cols-5 text-[9px] font-mono text-zinc-500 select-none px-0.5 pt-1">
-                <span>8px (Lego)</span>
-                <span className="text-center">32px</span>
-                <span className="text-center">64px</span>
-                <span className="text-center">128px</span>
+              <div className="grid text-[9px] font-mono text-zinc-500 select-none px-0.5 pt-1" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+                <span className="text-left">8px</span>
+                <span className="text-center">124px</span>
                 <span className="text-right">256px</span>
               </div>
             </div>
@@ -589,13 +588,28 @@ export default function App() {
                 }}
                 className="w-full h-1 rounded-lg bg-zinc-800 accent-zinc-200 cursor-pointer mt-2"
               />
-              <div className="grid grid-cols-5 text-[9px] font-mono text-zinc-500 select-none px-0.5 pt-1">
-                <span>1-bit (B&W)</span>
-                <span className="text-center">3-bit</span>
-                <span className="text-center">4-bit (Retro)</span>
-                <span className="text-center">8-bit (VGA)</span>
-                <span className="text-right">24-bit (HD)</span>
-              </div>
+              {(() => {
+                const bitDepthTicks = [1, 3, 4, 8, 24];
+                const labels: Record<number, string> = {
+                  1: '1 bit',
+                  3: '8 bits',
+                  4: '12 bits',
+                  8: '16 bits',
+                  24: '24 bits'
+                };
+                return (
+                  <div
+                    className="grid text-[9px] font-mono text-zinc-500 select-none px-0.5 pt-1"
+                    style={{ gridTemplateColumns: `repeat(${bitDepthTicks.length}, minmax(0, 1fr))` }}
+                  >
+                    {bitDepthTicks.map((b, i) => (
+                      <span key={b} className={i === bitDepthTicks.length - 1 ? 'text-right' : i === 0 ? undefined : 'text-center'}>
+                        {labels[b]}
+                      </span>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* COLOR PALETTE DROPDOWN */}

@@ -8,7 +8,9 @@ export interface PresetImage {
   name: string;
   category: string;
   description: string;
-  draw: (ctx: CanvasRenderingContext2D, width: number, height: number) => void;
+  // Either provide a procedural draw function, or a source URL to an example image.
+  draw?: (ctx: CanvasRenderingContext2D, width: number, height: number) => void;
+  src?: string;
 }
 
 export interface DigitizeSettings {

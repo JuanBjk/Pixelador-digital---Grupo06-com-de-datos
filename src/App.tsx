@@ -29,8 +29,8 @@ import ImageDropzone from './components/ImageDropzone';
 import EducationalInfo from './components/EducationalInfo';
 
 export default function App() {
-  // Preset Selection state (Defaults to the gorgeous sunset mountain)
-  const [activePresetId, setActivePresetId] = useState<string | null>('sunset');
+  // Preset Selection state (Defaults to first example photo)
+  const [activePresetId, setActivePresetId] = useState<string | null>('photo1');
   const [customImageSrc, setCustomImageSrc] = useState<string | null>(null);
   
   // Settings state
@@ -70,15 +70,40 @@ export default function App() {
     if (!ctx) return;
 
     if (activePresetId) {
-      // Procedural Drawing
+      // Load preset image (if preset provides an image src)
       const preset = PRESETIMAGES.find(p => p.id === activePresetId);
       if (preset) {
-        // We set fixed standard dimension for high quality original (e.g., 640x480)
-        canvas.width = 640;
-        canvas.height = 480;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        preset.draw(ctx, canvas.width, canvas.height);
-        processImage();
+        if (preset.src) {
+          const img = new Image();
+          img.onload = () => {
+            // Enforce max dimension to keep processing fast and light
+            const maxDim = 800;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            ctx.clearRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
+            processImage();
+          };
+          img.src = preset.src;
+        } else if (preset.draw) {
+          // Fallback to procedural draw (if present)
+          canvas.width = 640;
+          canvas.height = 480;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          preset.draw(ctx, canvas.width, canvas.height);
+          processImage();
+        }
       }
     } else if (customImageSrc) {
       // User Uploaded Image Element
